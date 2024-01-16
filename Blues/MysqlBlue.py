@@ -7,6 +7,7 @@
 @IDE ：PyCharm
 """
 from sanic import Blueprint, text, json
+from UtilTools.DatabaseTools.MysqlTool import MySqlCurd
 
 mysql_api = Blueprint("mysql_api", url_prefix="/mysql")
 
@@ -16,12 +17,19 @@ async def run(request):
     """
     mysql请求根目录
     """
-    return text("这是请求的mysql")
+    return text("这是请求的mysql的根目录")
 
 
-@mysql_api.get('/get1')
-async def get(request):
+@mysql_api.get('/select_now_database')
+async def select_now_database(request):
     """
-    mysql 请求
+    查询数据库版本
     """
-    return text("这是请求的mysql查询")
+    MSC = MySqlCurd()
+    try:
+        data = MSC.select_version()
+        result = {"code": 200, "data": data}
+        return json(result)
+    except Exception as e:
+        result = {"code": 0, "data": e}
+        return json(result)

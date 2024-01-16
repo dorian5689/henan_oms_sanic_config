@@ -48,6 +48,24 @@ class MySqlCurd(object):
             self.log.error(F'数据库连接失败:{self.db}')
             raise F'数据库连接失败：{e}'
 
+    def select_version(self):
+        """
+        查询数据库版本
+        :return:
+        """
+        try:
+            with self.connection.cursor() as cursor:
+                select_version_sql = F'SELECT VERSION()'
+                cursor.execute(select_version_sql)
+                data = cursor.fetchone()[0]
+                result = {"查询数据库版本": data}
+                self.log.warning(result)
+                return result
+        except Exception as e:
+            result = {"查询数据库版本失败": e}
+            self.log.error(result)
+            return result
+
     def close(self):
         """
         关闭MySQL数据库连接
@@ -298,5 +316,3 @@ if __name__ == '__main__':
     # query_return_header_and_data_pd_demo()  # 返回pd
     # query_list_demo()  # 查询数据
     # update_list_demo() # 更新数据
-
-
